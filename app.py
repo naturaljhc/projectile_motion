@@ -93,14 +93,37 @@ if v_0 is not None and theta >= 0 and h_0 >= 0:
     # st.write(rf"y = {h_max:.2f} meters")
     
     # Calculate the locations for the hoop
-    x = v_0**2*np.sin(2*theta_rad)/(2*g) + delx
+    x_max = v_0**2*np.sin(2*theta_rad)/(2*g) + delx
     # st.write(f"x = {x:.2f} meters")
 
-    st.write(rf"Set the hoop at $(x, y) = (${x:.2f} m$,$ {h_max:.2f} m$)$ relative to the origin")
+    st.write(rf"Set the hoop at $(x, y) = (${x_max:.2f} m$,$ {h_max:.2f} m$)$ relative to the origin")
 
 st.header("Step 5b:")
 if v_0 is not None and theta >= 0 and h_0 >= 0:
-    x = v_0**2*np.sin(2*theta_rad)/(g) + delx
+    x_par = v_0**2*np.sin(2*theta_rad)/(g) + delx
     # st.write(f"x = {x:.2f} meters")
 
-    st.write(rf"Set the hoop at $(x, y) = (${x:.2f} m$,$ {h_0:.2f} m$)$ relative to the origin")
+    st.write(rf"Set the hoop at $(x, y) = (${x_par:.2f} m$,$ {h_0:.2f} m$)$ relative to the origin")
+
+import matplotlib.pyplot as plt
+
+if v_0 is not None:
+    x_vals = np.linspace(0, theoretical_R, 10000)
+    y_vals = -g/(2*(v_0*np.cos(theta_rad))**2)*x_vals**2 + x_vals*np.tan(theta_rad) + h_0
+    
+    fig, ax = plt.subplots()
+    ax.plot(x_vals, y_vals)
+    ax.scatter(theoretical_R, 0, color = 'k')
+    ax.text(theoretical_R, .03*h_max, f'({theoretical_R:.2f}, {0.00})', color='black', fontsize=12, ha='right')
+    ax.scatter(x_max, h_max, color = 'k')
+    ax.text(x_max, 1.03*h_max, f'({x_max:.2f}, {h_max:.2f})', color='black', fontsize=12, ha='left')
+    if h_0 != h_max:
+        ax.scatter(x_par, h_0, color = 'k')
+        ax.text(x_par, h_0 - .05*h_max, f'({x_par:.2f}, {h_0:.2f})', color='black', fontsize=12, ha='left')
+    ax.set_ylim(-.05*h_max, 1.1*h_max)
+    ax.set_xlim(0, 1.1*theoretical_R)
+    ax.set_xlabel("Distance (m)", fontsize = 14)
+    ax.set_ylabel("Height (m)", fontsize = 14)
+    ax.set_title("Projectile Motion", fontsize = 18)
+    ax.grid()
+    st.pyplot(fig)
